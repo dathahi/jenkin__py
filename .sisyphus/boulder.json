@@ -1,0 +1,23 @@
+{
+  "active_plan": "/home/dat/Code/prj_jenkin/golang/.sisyphus/plans/go-jenkins-demo.md",
+  "started_at": "2026-05-05T07:14:07.366Z",
+  "session_ids": [
+    "ses_209142579ffeVduosn6Voxo539"
+  ],
+  "session_origins": {
+    "ses_209142579ffeVduosn6Voxo539": "direct"
+  },
+  "plan_name": "go-jenkins-demo",
+  "agent": "atlas",
+  "task_sessions": {
+    "todo:1": {
+      "task_key": "todo:1",
+      "task_label": "1",
+      "task_title": "Install Go 1.26.1 + Configure PATH",
+      "session_id": "ses_2090286c2ffeLDgxgtf702DvVP",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-05-05T07:18:19.250Z"
+    }
+  }
+}

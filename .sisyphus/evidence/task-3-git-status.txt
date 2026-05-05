@@ -1,0 +1,13 @@
+On branch master
+nothing to commit, working tree clean
+
+Last commit: 01eb067 feat: init go-demo project with dockerfile
+
+Committed files:
+- .gitignore
+- Dockerfile
+- go.mod
+- main.go
+- .sisyphus/evidence/*.txt
+- .sisyphus/plans/go-jenkins-demo.md
+- .sisyphus/boulder.json

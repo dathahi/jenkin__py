@@ -1,0 +1,13 @@
+Container ID: ddbaf9e94c50
+Image: go-demo
+Status: Exited (0) 2 minutes ago
+Ports: 0.0.0.0:8081->8081/tcp, [::]:8081->8081/tcp
+
+--- curl test ---
+HTTP 200 OK - Server responding on port 8081
+
+Docker image built successfully:
+REPOSITORY   TAG      IMAGE ID       CREATED        SIZE
+go-demo      latest   5fcfc9a0bef2   2 minutes ago  27.7MB
+
+Test result: Container ran and served content on port 8081
