@@ -10,10 +10,15 @@ import (
 var startTime = time.Now()
 var version = "1.0.0"
 
-func main() {
-	hostname, _ := os.Hostname()
+func setupRoutes() http.Handler {
+	mux := http.NewServeMux()
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+		hostname, _ := os.Hostname()
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fmt.Fprintf(w, `<!DOCTYPE html>
 <html>
@@ -40,16 +45,16 @@ func main() {
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
         h1 { color: #00d4aa; margin-bottom: 1rem; }
-        .info { 
-            margin: 0.5rem 0; 
+        .info {
+            margin: 0.5rem 0;
             color: #a0a0a0;
             font-size: 0.95rem;
         }
         .label { color: #888; }
         .value { color: #fff; font-weight: 500; }
-        .version { 
-            margin-top: 1.5rem; 
-            padding-top: 1rem; 
+        .version {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
             border-top: 1px solid rgba(255,255,255,0.1);
             font-size: 0.85rem;
             color: #666;
@@ -60,15 +65,15 @@ func main() {
     <div class="container">
         <h1>Go Demo - Jenkins Learning</h1>
         <div class="info">
-            <span class="label">Hostname:</span> 
+            <span class="label">Hostname:</span>
             <span class="value">%s</span>
         </div>
         <div class="info">
-            <span class="label">Server Started:</span> 
+            <span class="label">Server Started:</span>
             <span class="value">%s</span>
         </div>
         <div class="info">
-            <span class="label">Uptime:</span> 
+            <span class="label">Uptime:</span>
             <span class="value">%s</span>
         </div>
         <div class="version">Version %s</div>
@@ -77,14 +82,22 @@ func main() {
 </html>`, hostname, startTime.Format("2006-01-02 15:04:05"), time.Since(startTime).Round(time.Second), version)
 	})
 
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprint(w, `{"status":"ok"}`)
 	})
 
-	port := ":8081"
-	fmt.Printf("Server starting on port %s\n", port)
-	if err := http.ListenAndServe(port, nil); err != nil {
+	return mux
+}
+
+func main() {
+	server := &http.Server{
+		Addr:    ":8081",
+		Handler: setupRoutes(),
+	}
+
+	fmt.Printf("Server starting on port %s\n", server.Addr)
+	if err := server.ListenAndServe(); err != nil {
 		fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
 		os.Exit(1)
 	}
