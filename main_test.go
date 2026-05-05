@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 )
@@ -90,5 +91,42 @@ func TestHealthResponseFormat(t *testing.T) {
 	_, exists := result["status"]
 	if !exists {
 		t.Error("expected 'status' key in response")
+	}
+}
+
+func TestEnvVarsNotSet(t *testing.T) {
+	os.Unsetenv("API_KEY")
+	os.Unsetenv("DB_PASSWORD")
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+
+	handler := setupRoutes()
+	handler.ServeHTTP(rec, req)
+
+	body := rec.Body.String()
+	if !strings.Contains(body, "API_KEY:</span>") || !strings.Contains(body, "(not set)") {
+		t.Error("expected env vars to show (not set) when not set")
+	}
+}
+
+func TestEnvVarsSet(t *testing.T) {
+	os.Setenv("API_KEY", "test-api-key")
+	os.Setenv("DB_PASSWORD", "test-db-password")
+	defer os.Unsetenv("API_KEY")
+	defer os.Unsetenv("DB_PASSWORD")
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+
+	handler := setupRoutes()
+	handler.ServeHTTP(rec, req)
+
+	body := rec.Body.String()
+	if !strings.Contains(body, "API_KEY:</span>") || !strings.Contains(body, "****") {
+		t.Error("expected masked credentials when env vars are set")
+	}
+	if strings.Contains(body, "test-api-key") || strings.Contains(body, "test-db-password") {
+		t.Error("actual credential values should not appear in response")
 	}
 }
