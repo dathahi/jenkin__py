@@ -17,8 +17,6 @@ pipeline {
 	    stage('Login'){
 	        steps{
                 withCredentials([
-                    string( credentialsID: 'api-key', variable: 'API_KEY')
-                    string( credentialsID: 'pass_db', variable: 'DB_PASSWORD')
                     usernamePassword( credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')
                     ]) {
                             sh '''
