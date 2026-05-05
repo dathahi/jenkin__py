@@ -1,3 +1,5 @@
+//go:build healthcheck
+
 package main
 
 import (
@@ -9,7 +11,7 @@ import (
 	"time"
 )
 
-func main() {
+func healthcheck() {
 	url := "http://localhost:8081/health"
 	timeout := 5 * time.Second
 
