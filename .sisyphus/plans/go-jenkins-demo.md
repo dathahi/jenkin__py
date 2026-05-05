@@ -116,7 +116,7 @@ Wave FINAL (Verification):
 
 ## TODOs
 
-- [ ] 1. Install Go 1.26.1 + Configure PATH
+- [x] 1. Install Go 1.26.1 + Configure PATH
 
   **What to do**:
   - Download go1.26.1.linux-amd64.tar.gz from https://go.dev/dl/
@@ -179,7 +179,7 @@ Wave FINAL (Verification):
 
 ---
 
-- [ ] 2. Create main.go + go.mod
+- [x] 2. Create main.go + go.mod
 
   **What to do**:
   - Run `go mod init go-demo` in /home/dat/Code/prj_jenkin/golang
@@ -261,7 +261,7 @@ Wave FINAL (Verification):
 
 ---
 
-- [ ] 3. Create Dockerfile + .gitignore + Git Init
+- [x] 3. Create Dockerfile + .gitignore + Git Init
 
   **What to do**:
   - Create Dockerfile (multi-stage build):
@@ -360,19 +360,19 @@ Wave FINAL (Verification):
 
 ## Final Verification Wave (MANDATORY — after ALL implementation tasks)
 
-- [ ] F1. **Plan Compliance Audit** — `oracle`
+- [x] F1. **Plan Compliance Audit** — `oracle`
   Read the plan end-to-end. Verify: Go installed, main.go serves HTML + /health, Dockerfile builds, git initialized. Check evidence in .sisyphus/evidence/. Compare deliverables against plan.
   Output: `Must Have [4/4] | Must NOT Have [0 violations] | Tasks [3/3] | VERDICT: APPROVE/REJECT`
 
-- [ ] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** — `unspecified-high`
   Run `go vet ./...` and `go build`. Review main.go for: proper error handling, no unused imports, clean code. Check Dockerfile for best practices. Check .gitignore completeness.
   Output: `Build [PASS/FAIL] | Vet [PASS/FAIL] | Files [3 clean/0 issues] | VERDICT`
 
-- [ ] F3. **Real Manual QA** — `unspecified-high`
+- [x] F3. **Real Manual QA** — `unspecified-high`
   Start server: `go run main.go`. Test `curl localhost:8080` HTML response. Test `curl localhost:8080/health` JSON response. Docker build and run. Verify container serves same content. Kill all processes. Save evidence to `.sisyphus/evidence/final-qa/`.
   Output: `Scenarios [4/4 pass] | Integration [2/2] | Edge Cases [1 tested] | VERDICT`
 
-- [ ] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** — `deep`
   Verify: Only 4 files exist (main.go, go.mod, Dockerfile, .gitignore). No Jenkinsfile exists. No external dependencies. No subdirectories. No over-engineering.
   Output: `Tasks [3/3 compliant] | Contamination [CLEAN] | Unaccounted [CLEAN] | VERDICT`
 

@@ -1,0 +1,57 @@
+========================================
+GO-JENKINS-DEMO MANUAL QA REPORT
+========================================
+Date: 2026-05-05
+
+SCENARIOS TESTED: 3/3 PASS
+
+---
+Test 1: Go Server Test [PASS]
+---
+  Command: go run main.go
+  Port: 8081
+  HTML Endpoint: curl localhost:8081
+    - Response: HTML with "Go Demo - Jenkins Learning"
+    - Evidence: go-server-html-response.html
+  Health Endpoint: curl localhost:8081/health
+    - Response: {"status":"ok"}
+    - Evidence: go-server-health-response.json
+  Server: Started and killed successfully
+
+---
+Test 2: Docker Container Test [PASS]
+---
+  Build: docker build -t go-demo .
+    - Result: SUCCESS (multi-stage build)
+  Run: docker run -d -p 8081:8081 --name go-demo-qa go-demo
+    - Container ID: ecd33c4739d0
+  HTML Endpoint: curl localhost:8081
+    - Response: HTML from container (hostname: ecd33c4739d0)
+    - Evidence: docker-html-response.html
+  Cleanup: docker stop go-demo-qa && docker rm go-demo-qa
+    - Result: SUCCESS
+
+---
+Test 3: Build Test [PASS]
+---
+  Command: go build -o go-demo .
+  Result: SUCCESS
+  Binary: go-demo (8.0M)
+  Go Version: go1.26.2 linux/amd64
+  Evidence: build-go-version.txt
+
+---
+EVIDENCE FILES
+---
+  1. go-server-html-response.html (1,811 bytes)
+  2. go-server-health-response.json (15 bytes)
+  3. docker-html-response.html (1,816 bytes)
+  4. build-go-version.txt (79 bytes)
+
+---
+VERDICT: APPROVE
+---
+All test scenarios passed successfully.
+The go-jenkins-demo project is functional and ready for deployment.
+
+========================================
