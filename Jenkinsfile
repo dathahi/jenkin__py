@@ -39,16 +39,17 @@ pipeline {
                 }
             }
         }
-        post {
-            always {
-                echo 'pipeline đang chạy'
-            }
-            success {
-                echo 'thành công'
-            }
-            failure {
-                echo 'thất bại'
-            }
+    }
+    post {
+        always {
+            echo 'pipeline đang chạy'
+        }
+        success {
+            echo 'thành công'
+        }
+        failure {
+            echo 'thất bại'
         }
     }
+    
 }
