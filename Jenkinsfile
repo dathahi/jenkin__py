@@ -1,5 +1,11 @@
 pipeline {
     agent { docker { image 'golang:1.26.2-alpine3.23' } }
+    
+    enviroment {
+        GOCACHE = "/tmp/.cache/go-build"
+        GOPATH = "/tmp/go"
+    }
+
     stages {
         stage('Build') {
             steps {
