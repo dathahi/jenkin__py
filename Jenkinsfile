@@ -1,69 +1,97 @@
 pipeline {
-    agent { 
-        docker { 
-            image 'golang:1.26.2-alpine3.23'
-            args '''
-                -u docker 
-                -v /var/run/docker.sock:/var/run/docker.sock
-            '''
-            } 
-        }
-    
+
+    agent any
+
     environment {
-        GOCACHE = "/tmp/.cache/go-build"
-        GOPATH = "/tmp/go"
+        GOCACHE = "${WORKSPACE}/.cache/go-build"
+        GOPATH  = "${WORKSPACE}/.go"
+        CGO_ENABLED = '0'
+
+        IMAGE_NAME = 'dathahi/golang-demo'
+        IMAGE_TAG  = 'latest'
     }
 
     stages {
-        stage('Build') {
+
+        stage('Prepare') {
             steps {
-                sh 'go build -o go-demo .'
+                sh '''
+                    mkdir -p $GOCACHE
+                    mkdir -p $GOPATH
+
+                    go version
+                    docker version
+                '''
             }
         }
-        
+
         stage('Test') {
-        	steps {
-                sh 'go test ./...'
+            steps {
+                sh '''
+                    go test ./...
+                '''
             }
         }
 
-	    stage('Login'){
-	        steps{
+        stage('Build Binary') {
+            steps {
+                sh '''
+                    go build -o go-demo .
+                '''
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh '''
+                    docker build \
+                      -t $IMAGE_NAME:$IMAGE_TAG \
+                      .
+                '''
+            }
+        }
+
+        stage('Login DockerHub') {
+            steps {
+
                 withCredentials([
-                    usernamePassword( credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')
-                    ]) {
-                            sh '''
-                                echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                            '''
-                        }
-            }
-	    }
-        stage('Push'){
-            steps{
-                sh 'docker push dathahi/golang-demo:latest'
-            }
-        }
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
 
-        stage('Deploy'){
-            steps{
-                sh './go-demo'
-                
-                timeout(time: 3, unit: 'MINUTES'){
-                    sh './healthcheck.sh'
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login \
+                            -u "$DOCKER_USER" \
+                            --password-stdin
+                    '''
                 }
             }
         }
+
+        stage('Push Image') {
+            steps {
+                sh '''
+                    docker push $IMAGE_NAME:$IMAGE_TAG
+                '''
+            }
+        }
     }
+
     post {
+
         always {
-            echo 'pipeline đang chạy'
+            cleanWs()
         }
+
         success {
-            echo 'thành công'
+            echo 'Pipeline success'
         }
+
         failure {
-            echo 'thất bại'
+            echo 'Pipeline failed'
         }
     }
-    
 }
